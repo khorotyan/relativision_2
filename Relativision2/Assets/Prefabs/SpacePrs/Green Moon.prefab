@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 114121908430131350}
   - component: {fileID: 114732342618741452}
   - component: {fileID: 65522600755869840}
+  - component: {fileID: 114703714704260814}
   m_Layer: 0
   m_Name: Green Moon
   m_TagString: Untagged
@@ -49,7 +50,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4538922376659456
 Transform:
   m_ObjectHideFlags: 1
@@ -57,7 +58,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1860858987219572}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -58.016636, y: 0, z: 28.844086}
   m_LocalScale: {x: 8, y: 8, z: 8}
   m_Children:
   - {fileID: 4956540628521614}
@@ -92,7 +93,6 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_Materials:
   - {fileID: 2100000, guid: 2793e0781a7dff848b4e58203557ab8e, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -201,6 +201,58 @@ MonoBehaviour:
   Corona: {fileID: 114801080586547006}
   MeshFilter: {fileID: 33013951790776010}
   MeshRenderer: {fileID: 23752879033804048}
+--- !u!114 &114703714704260814
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1860858987219572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e461ad539f3b51c4083dbb5b37e194ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DelayMin: 0.1
+  DelayMax: 0.2
+  LifeMin: 1
+  LifeMax: 1.5
+  SizeMin: 15
+  SizeMax: 30
+  Detail: 100
+  Radius: 1.1
+  Colors:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 0.32941177, g: 0.69411767, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  Brightness: 1
+  Sprites:
+  - {fileID: 21300000, guid: b55677a0f201469469bc6becc7522cf3, type: 3}
+  delay: 0.09110573
 --- !u!114 &114732342618741452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -220,7 +272,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1860858987219572}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e516e9acf2b0d464eb92421b255e5635, type: 3}
   m_Name: 

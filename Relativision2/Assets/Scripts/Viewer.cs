@@ -6,13 +6,14 @@ public class Viewer : MonoBehaviour
 {
     public ReferenceVars rv;
 
-    private float acceleration = 0.3f;
+    private float acceleration = 0.9f;
 
     public float vel;
     public float time;
     public float ownTime;
     private float timeTicks = 0.02f;
     private int accelerating = 0;
+    private float multiplier = 1;
 
     private void FixedUpdate()
     {
@@ -51,9 +52,9 @@ public class Viewer : MonoBehaviour
         ManageAcceleration();
 
         // Limit the movement speed
-        if (Mathf.Abs(vel) > 0.97f * Formulas.lightSpeed)
+        if (Mathf.Abs(vel) > 0.98f * Formulas.lightSpeed)
         {
-            vel = 0.97f * Formulas.lightSpeed * Mathf.Sign(vel);
+            vel = 0.98f * Formulas.lightSpeed * Mathf.Sign(vel);
         }
 
         // Apply the changed position to the mover and the ground
@@ -75,11 +76,13 @@ public class Viewer : MonoBehaviour
 
             if (vel > 0)
             {
-                newLen = Formulas.GetStaticsLength(1, vel);
+                //newLen = Formulas.GetStaticsLength(1, vel);
+                newLen = Formulas.GetMoversLength(1, vel);
             }
             else if (vel < 0)
             {
-                newLen = Formulas.GetMoversLength(1, vel);
+                //newLen = Formulas.GetMoversLength(1, vel);
+                newLen = Formulas.GetStaticsLength(1, vel);
             }
 
             // Change object position
@@ -108,13 +111,42 @@ public class Viewer : MonoBehaviour
             
             if (vel > 0)
             {
-                float objDistDiff = objDist - objDist / Formulas.GetGamma(vel);
-                rv.staticsParent.GetChild(i).position = statInitPos - new Vector3(0, 0, objDistDiff);
+                //float objDistDiff = objDist - objDist / Formulas.GetGamma(vel);
+                //rv.staticsParent.GetChild(i).position = statInitPos - new Vector3(0, 0, objDistDiff);
+                float objDistDiff = objDist * Formulas.GetGamma(vel) - objDist;
+                rv.staticsParent.GetChild(i).position = statInitPos + new Vector3(0, 0, objDistDiff);
             }
             else if (vel < 0)
             {
-                float objDistDiff = objDist * Formulas.GetGamma(vel) - objDist;
-                rv.staticsParent.GetChild(i).position = statInitPos + new Vector3(0, 0, objDistDiff);
+                //float objDistDiff = objDist * Formulas.GetGamma(vel) - objDist;
+                //rv.staticsParent.GetChild(i).position = statInitPos + new Vector3(0, 0, objDistDiff);
+                float objDistDiff = objDist - objDist / Formulas.GetGamma(vel);
+                rv.staticsParent.GetChild(i).position = statInitPos - new Vector3(0, 0, objDistDiff);
+            }
+
+            /*
+            // Apply the clock tick rate - thetta0
+            if (rv.staticsParent.GetChild(i).name.Contains("Windmill"))
+            {
+                float defSpeed = rv.staticsParent.GetChild(i).GetComponent<StaticManager>().defRotSpeed;
+
+                if (vel > 0)
+                {
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().rotSpeed = defSpeed * Formulas.GetGamma(vel);
+                }
+                else if (vel < 0)
+                {
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().rotSpeed = defSpeed / Formulas.GetGamma(vel);
+                }
+            }
+            */
+
+            // Apply time to the windmill propellers (it takes time for the light to get to the observer's eye
+            if (rv.staticsParent.GetChild(i).name.Contains("Windmill"))
+            {
+                float distDiff = (rv.staticsParent.GetChild(i).position.z - transform.position.z);
+
+                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = Formulas.GetMoversTime(distDiff, time, vel);
             }
         }     
     }
@@ -127,22 +159,32 @@ public class Viewer : MonoBehaviour
         up = KeyCode.W;
         down = KeyCode.S;
 
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            multiplier = 4;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            multiplier = 1;
+        }
+
         if (Input.GetKey(up))
         {
-            vel += acceleration * Time.fixedDeltaTime;
+            vel += multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = 1;
         }
         else if (Input.GetKey(down))
         {
-            vel -= acceleration * Time.fixedDeltaTime;
+            vel -= multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = -1;
         }
         // If not accelerating/decelerating, slow down untill stopped
+        /*
         else if (!Input.GetKey(up) && !Input.GetKey(down))
         {
             if (vel > 0)
             {
-                vel -= 0.2f * acceleration * Time.fixedDeltaTime;
+                vel -= 0.1f * acceleration * Time.fixedDeltaTime;
                 accelerating = -1;
 
                 if (vel < 0)
@@ -150,13 +192,14 @@ public class Viewer : MonoBehaviour
             }
             else if (vel < 0)
             {
-                vel += 0.2f * acceleration * Time.fixedDeltaTime;
+                vel += 0.1f * acceleration * Time.fixedDeltaTime;
                 accelerating = 1;
 
                 if (vel > 0)
                     vel = 0;
             }
         }
+        */
     }
 
     private void SpawnObjects()
@@ -175,16 +218,21 @@ public class Viewer : MonoBehaviour
             }
             
             // Destroy the objects that are far away
-            if (Mathf.Abs(transform.position.z - statPosZ) > 500 && statPosZ < transform.position.z)
+            if (Mathf.Abs(transform.position.z - statPosZ) > 800 && statPosZ < transform.position.z)
             {
                 destroyables.Add(rv.staticsParent.GetChild(i));
             }
         }
 
-        if (Mathf.Abs(transform.position.z - maxPosZ) < 250)
+        if (Mathf.Abs(transform.position.z - maxPosZ) < 500)
         {
             int obj1ID = Random.Range(0, rv.worldObjs.Length);
             int obj2ID = Random.Range(0, rv.worldObjs.Length);
+
+            if (obj2ID == 6)
+                obj2ID = Random.Range(0, rv.worldObjs.Length);
+
+            obj1ID = 6;
 
             Transform obj1 = Instantiate(rv.worldObjs[obj1ID], rv.staticsParent).transform;
             Transform obj2 = Instantiate(rv.worldObjs[obj2ID], rv.staticsParent).transform;
@@ -192,11 +240,11 @@ public class Viewer : MonoBehaviour
             float yPos1 = rv.worldObjs[obj1ID].transform.position.y;
             float yPos2 = rv.worldObjs[obj2ID].transform.position.y;
 
-            float xPos1 = Random.Range(-25f, -35f);
-            float xPos2 = Random.Range(25f, 35f);
+            float xPos1 = -25;//Random.Range(-25f, -35f);
+            float xPos2 = 25;//Random.Range(25f, 35f);
 
-            float zPos1 = Random.Range(30f, 35f);
-            float zPos2 = Random.Range(30f, 35f);
+            float zPos1 = 30f;//Random.Range(30f, 35f);
+            float zPos2 = 30f;//Random.Range(30f, 35f);
 
             obj1.transform.position = new Vector3(xPos1, yPos1, maxPosZ + zPos1);
             obj2.transform.position = new Vector3(xPos2, yPos2, maxPosZ + zPos2);
