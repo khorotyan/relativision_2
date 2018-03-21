@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Viewer : MonoBehaviour
 {
+    public StaticManager staticManager;
     public ReferenceVars rv;
 
     private float acceleration = 0.9f;
@@ -140,15 +141,42 @@ public class Viewer : MonoBehaviour
                 }
             }
             */
-
+            
             // Apply time to the windmill propellers (it takes time for the light to get to the observer's eye
             if (rv.staticsParent.GetChild(i).name.Contains("Windmill"))
             {
-                float distDiff = (rv.staticsParent.GetChild(i).position.z - transform.position.z);
+                float distDiff = Mathf.Abs(rv.staticsParent.GetChild(i).position.z - transform.position.z);
+                //rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = Formulas.GetMoversTime(distDiff, time, vel);
 
-                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = Formulas.GetMoversTime(distDiff, time, vel);
+                float timeToReach = 0;
+
+                if (vel == 0)
+                {
+                    timeToReach = distDiff / Formulas.lightSpeed;
+                }
+                else
+                {
+                    if (accelerating == 1 || accelerating == -1)
+                        timeToReach = Formulas.GetGamma(vel) * (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2);
+                }
+
+                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(timeToReach);
             }
-        }     
+        }
+
+        // Update static object shared time (tick rate based timescale)
+        if (vel > 0)
+        {
+            staticManager.UpdateTime(timeTicks / Formulas.GetGamma(vel));
+        }
+        else if (vel < 0)
+        {
+            staticManager.UpdateTime(timeTicks * Formulas.GetGamma(vel));
+        }
+        else
+        {
+            staticManager.UpdateTime(0.02f);
+        }
     }
 
     private void ManageAcceleration()

@@ -185,6 +185,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initPos: {x: 0, y: 0, z: 0}
   initScale: {x: 0, y: 0, z: 0}
+  defRotSpeed: 20
+  rotSpeed: 20
 --- !u!114 &114505792156693852
 MonoBehaviour:
   m_ObjectHideFlags: 1

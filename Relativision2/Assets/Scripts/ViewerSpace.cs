@@ -135,19 +135,19 @@ public class ViewerSpace : MonoBehaviour
             {
                 if (vel > 0)
                 {
-                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMin = 0.1f * Formulas.GetGamma(vel);
-                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMax = 0.1f * Formulas.GetGamma(vel);
-
-                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMin = 1f * Formulas.GetGamma(vel);
-                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMax = 1f * Formulas.GetGamma(vel);
-                }
-                else if (vel < 0)
-                {
                     rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMin = 0.1f / Formulas.GetGamma(vel);
                     rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMax = 0.1f / Formulas.GetGamma(vel);
 
                     rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMin = 1f / Formulas.GetGamma(vel);
                     rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMax = 1f / Formulas.GetGamma(vel);
+                }
+                else if (vel < 0)
+                {
+                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMin = 0.1f * Formulas.GetGamma(vel);
+                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().DelayMax = 0.1f * Formulas.GetGamma(vel);
+
+                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMin = 1f * Formulas.GetGamma(vel);
+                    rv.staticsParent.GetChild(i).GetComponent<SgtLightningSpawner>().LifeMax = 1f * Formulas.GetGamma(vel);
                 }  
             }
         }     
