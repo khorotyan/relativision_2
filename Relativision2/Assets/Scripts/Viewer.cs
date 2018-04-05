@@ -6,8 +6,11 @@ public class Viewer : MonoBehaviour
 {
     public StaticManager staticManager;
     public ReferenceVars rv;
+    public Transform ground;
 
-    private float acceleration = 0.9f;
+    public float acceleration = 0.9f;
+    public float inObjDist = 30;
+    public float velPercentage = 0;
 
     public float vel;
     public float time;
@@ -15,6 +18,8 @@ public class Viewer : MonoBehaviour
     private float timeTicks = 0.02f;
     private int accelerating = 0;
     private float multiplier = 1;
+    private bool viewChanged = false;
+    private float prevVel;
 
     private void FixedUpdate()
     {
@@ -25,6 +30,9 @@ public class Viewer : MonoBehaviour
         ApplyStaticObjPos();
 
         SpawnObjects();
+
+        if (Input.GetKeyDown(KeyCode.C))
+            ChangeView();
     }
 
     private void ManageTime()
@@ -44,7 +52,7 @@ public class Viewer : MonoBehaviour
             ownTime += timeTicks;
         }
 
-        rv.timeText.text = "t = " + (time).ToString("F1") + " / " + "t' = " + (ownTime).ToString("F1");
+        //rv.timeText.text = "t = " + (time).ToString("F1") + " / " + "t' = " + (ownTime).ToString("F1");
     }
 
     // Calculate body velocity and move it
@@ -60,8 +68,10 @@ public class Viewer : MonoBehaviour
 
         // Apply the changed position to the mover and the ground
         transform.position += new Vector3(0, 0, vel * timeTicks);
+        ground.position += new Vector3(0, 0, vel * timeTicks);
 
-        rv.VelocityText.text = (vel / Formulas.lightSpeed).ToString("F2") + "% of light speed";
+        rv.VelocityText.text = (100 * vel / Formulas.lightSpeed).ToString("F1") + "% of light speed";
+        velPercentage = vel / Formulas.lightSpeed;
     }
     
     // Apply static object positions and display some data
@@ -141,29 +151,74 @@ public class Viewer : MonoBehaviour
                 }
             }
             */
-            
+
             // Apply time to the windmill propellers (it takes time for the light to get to the observer's eye
             if (rv.staticsParent.GetChild(i).name.Contains("Windmill"))
             {
+                /*
                 float distDiff = Mathf.Abs(rv.staticsParent.GetChild(i).position.z - transform.position.z);
                 //rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = Formulas.GetMoversTime(distDiff, time, vel);
 
                 float timeToReach = 0;
+                
+                //if (vel == 0)
+                //{
+                //    timeToReach = distDiff / Formulas.lightSpeed;
+                //}
+                
+                //else
+                //{
+                    if (vel > 0 || vel < 0)
+                        timeToReach = Formulas.GetGamma(vel) * (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2);
+                //}
 
-                if (vel == 0)
+                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(timeToReach);
+                */
+
+                float distDiff = Mathf.Abs(rv.staticsParent.GetChild(i).position.z - transform.position.z);
+                if (vel > 0)
                 {
-                    timeToReach = distDiff / Formulas.lightSpeed;
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time =
+                        Formulas.GetGamma(vel) * (time + (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2));
+                }
+                else if (vel < 0)
+                {
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time =
+                        Formulas.GetGamma(vel) * (time - (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2));
                 }
                 else
                 {
-                    if (accelerating == 1 || accelerating == -1)
-                        timeToReach = Formulas.GetGamma(vel) * (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2);
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = time;
                 }
+            }
 
-                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(timeToReach);
+            // Apply moving static object's position
+            StaticManager sm = rv.staticsParent.GetChild(i).GetComponent<StaticManager>();
+            if (sm.isMover == true)
+            {
+                if (vel > 0)
+                {
+                    float ticks = timeTicks / Formulas.GetGamma(vel);
+                    sm.travelDist += 2 * vel * timeTicks;
+                    rv.staticsParent.GetChild(i).localPosition += new Vector3(0, 0, 
+                        sm.travelDist * Formulas.GetGamma(vel));
+                }
+                else if (vel < 0)
+                {
+                    float ticks = timeTicks * Formulas.GetGamma(vel);
+                    sm.travelDist += 2 * vel * timeTicks;
+                    rv.staticsParent.GetChild(i).localPosition += new Vector3(0, 0, 
+                        sm.travelDist / Formulas.GetGamma(vel));
+                }   
+                else
+                {
+                    //sm.travelDist += vel* timeTicks;
+                    //rv.staticsParent.GetChild(i).localPosition += new Vector3(0, 0, 
+                    //    0.5f * Formulas.lightSpeed * 0.02f);
+                }
             }
         }
-
+        /*
         // Update static object shared time (tick rate based timescale)
         if (vel > 0)
         {
@@ -173,10 +228,12 @@ public class Viewer : MonoBehaviour
         {
             staticManager.UpdateTime(timeTicks * Formulas.GetGamma(vel));
         }
-        else
-        {
-            staticManager.UpdateTime(0.02f);
-        }
+        */
+        //else
+        //{
+            //staticManager.UpdateTime(0.02f);
+        //}
+        
     }
 
     private void ManageAcceleration()
@@ -230,6 +287,45 @@ public class Viewer : MonoBehaviour
         */
     }
 
+    public void ChangeView()
+    {
+        if (viewChanged == false)
+        {
+            for (int i = 0; i < rv.staticsParent.childCount; i++)
+            {
+                if (rv.staticsParent.GetChild(i).GetComponent<StaticManager>().isMover == true)
+                {
+                    rv.staticsParent.GetChild(i).gameObject.SetActive(false);
+                }
+            }
+
+            transform.GetChild(2).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(false);
+
+            prevVel = vel;
+            vel = (vel + vel) / (1 + vel * vel / Mathf.Pow(Formulas.lightSpeed, 2));
+
+            viewChanged = !viewChanged;
+        }
+        else
+        {
+            for (int i = 0; i < rv.staticsParent.childCount; i++)
+            {
+                if (rv.staticsParent.GetChild(i).GetComponent<StaticManager>().isMover == true)
+                {
+                    rv.staticsParent.GetChild(i).gameObject.SetActive(true);
+                }
+            }
+
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(2).gameObject.SetActive(false);
+
+            vel = prevVel;
+
+            viewChanged = !viewChanged;
+        }
+    }
+
     private void SpawnObjects()
     {
         List<Transform> destroyables = new List<Transform>();
@@ -271,8 +367,8 @@ public class Viewer : MonoBehaviour
             float xPos1 = -25;//Random.Range(-25f, -35f);
             float xPos2 = 25;//Random.Range(25f, 35f);
 
-            float zPos1 = 30f;//Random.Range(30f, 35f);
-            float zPos2 = 30f;//Random.Range(30f, 35f);
+            float zPos1 = inObjDist;//Random.Range(30f, 35f);
+            float zPos2 = inObjDist;//Random.Range(30f, 35f);
 
             obj1.transform.position = new Vector3(xPos1, yPos1, maxPosZ + zPos1);
             obj2.transform.position = new Vector3(xPos2, yPos2, maxPosZ + zPos2);

@@ -11,6 +11,8 @@ public class StaticManager : MonoBehaviour
     public float defRotSpeed = 20;
     public float rotSpeed = 20;
     public static float sharedTime = 0;
+    public float travelDist = 0;
+    public float time = 0;
 
     private float extraRot = 0;
 
@@ -23,15 +25,14 @@ public class StaticManager : MonoBehaviour
     private void FixedUpdate()
     {
         RotatePropeller();
-
-        MoveStaticMover();
     }
 
     private void RotatePropeller()
     {
         if (transform.name.Contains("Windmill"))
         {
-            transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(sharedTime * rotSpeed - extraRot, 0, 0);
+            //transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(sharedTime * rotSpeed - extraRot, 0, 0);
+            transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(time * rotSpeed, 0, 0);
         }
     }
 
@@ -44,13 +45,5 @@ public class StaticManager : MonoBehaviour
     public void UpdateTime(float tickRate = 0.02f)
     {
         sharedTime += tickRate;
-    }
-
-    private void MoveStaticMover()
-    {
-        if (isMover == true)
-        {
-            transform.position += new Vector3(0, 0, 5 * 0.02f);
-        }
     }
 }

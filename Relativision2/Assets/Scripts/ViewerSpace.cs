@@ -6,7 +6,9 @@ public class ViewerSpace : MonoBehaviour
 {
     public ReferenceVars rv;
 
-    private float acceleration = 0.9f;
+    public float acceleration = 0.9f;
+    public float inObjDist = 110;
+    public float velPercentage = 0;
 
     public float vel;
     public float time;
@@ -14,12 +16,6 @@ public class ViewerSpace : MonoBehaviour
     private float timeTicks = 0.02f;
     private int accelerating = 0;
     private float multiplier = 1;
-
-    private void Awake()
-    {
-        Formulas.lightSpeed = 9;
-        acceleration = 0.9f;
-    }
 
     private void FixedUpdate()
     {
@@ -49,7 +45,7 @@ public class ViewerSpace : MonoBehaviour
             ownTime += timeTicks;
         }
 
-        rv.timeText.text = "t = " + (time).ToString("F1") + " / " + "t' = " + (ownTime).ToString("F1");
+        //rv.timeText.text = "t = " + (time).ToString("F1") + " / " + "t' = " + (ownTime).ToString("F1");
     }
 
     // Calculate body velocity and move it
@@ -65,7 +61,8 @@ public class ViewerSpace : MonoBehaviour
 
         transform.position += new Vector3(0, 0, vel * timeTicks);
 
-        rv.VelocityText.text = (vel / Formulas.lightSpeed).ToString("F2") + "% of light speed";
+        rv.VelocityText.text = (100 * vel / Formulas.lightSpeed).ToString("F1") + "% of light speed";
+        velPercentage = vel / Formulas.lightSpeed;
     }
     
     // Apply static object positions and display some data
@@ -180,6 +177,7 @@ public class ViewerSpace : MonoBehaviour
             vel -= multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = -1;
         }
+        /*
         // If not accelerating/decelerating, slow down untill stopped
         else if (!Input.GetKey(up) && !Input.GetKey(down))
         {
@@ -200,6 +198,7 @@ public class ViewerSpace : MonoBehaviour
                     vel = 0;
             }
         }
+        */
     }
 
     private void SpawnObjects()
@@ -238,8 +237,8 @@ public class ViewerSpace : MonoBehaviour
             float xPos1 = -40f; //Random.Range(-25f, -60f);
             float xPos2 = 40f; //Random.Range(25f, 60f);
 
-            float zPos1 = 110f; //Random.Range(90f, 150f);
-            float zPos2 = 110f; //Random.Range(90f, 150f);
+            float zPos1 = inObjDist; //Random.Range(90f, 150f);
+            float zPos2 = inObjDist; //Random.Range(90f, 150f);
 
             obj1.transform.position = new Vector3(xPos1, yPos1, maxPosZ + zPos1);
             obj2.transform.position = new Vector3(xPos2, yPos2, maxPosZ + zPos2);

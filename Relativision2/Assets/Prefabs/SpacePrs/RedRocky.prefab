@@ -468,10 +468,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820d4143d4439a3458dd1a91dfe54724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMover: 0
   initPos: {x: 0, y: 0, z: 0}
   initScale: {x: 0, y: 0, z: 0}
   defRotSpeed: 20
   rotSpeed: 20
+  travelDist: 0
 --- !u!114 &114871171650192928
 MonoBehaviour:
   m_ObjectHideFlags: 1

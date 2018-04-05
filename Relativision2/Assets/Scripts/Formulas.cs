@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Formulas : MonoBehaviour
 {
-    public static float lightSpeed = 9f;
+    public static float lightSpeed = 9;
 
     // Get the Lorenz factor
     public static float GetGamma(float velocity)
