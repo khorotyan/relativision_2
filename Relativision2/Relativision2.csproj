@@ -319,7 +319,6 @@
     <Compile Include="Assets\Medieval village\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\SpecularLighting.cs" />
     <Compile Include="Assets\Medieval village\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\WaterBase.cs" />
     <Compile Include="Assets\Medieval village\Standard Assets\Water (Pro Only)\Water4\Sources\Scripts\WaterTile.cs" />
-    <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Formulas.cs" />
     <Compile Include="Assets\Scripts\ReferenceVars.cs" />
     <Compile Include="Assets\Scripts\StaticManager.cs" />

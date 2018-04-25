@@ -474,6 +474,7 @@ MonoBehaviour:
   defRotSpeed: 20
   rotSpeed: 20
   travelDist: 0
+  time: 0
 --- !u!114 &114771993603033830
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -8,9 +8,10 @@ public class Viewer : MonoBehaviour
     public ReferenceVars rv;
     public Transform ground;
 
-    public float acceleration = 0.9f;
+    public float acceleration = 0.1f;
     public float inObjDist = 30;
     public float velPercentage = 0;
+    public bool alwaysAccelerate = false;
 
     public float vel;
     public float time;
@@ -41,7 +42,7 @@ public class Viewer : MonoBehaviour
         
         if (vel > 0)
         {
-            ownTime += timeTicks / Formulas.GetGamma(vel);
+            ownTime += timeTicks * Formulas.GetGamma(vel);
         }
         else if (vel < 0)
         {
@@ -155,41 +156,27 @@ public class Viewer : MonoBehaviour
             // Apply time to the windmill propellers (it takes time for the light to get to the observer's eye
             if (rv.staticsParent.GetChild(i).name.Contains("Windmill"))
             {
+                float distDiff = rv.staticsParent.GetChild(i).position.z - transform.position.z;
+
+                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(
+                        Formulas.GetGamma(vel) * ((vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2)));
                 /*
-                float distDiff = Mathf.Abs(rv.staticsParent.GetChild(i).position.z - transform.position.z);
-                //rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = Formulas.GetMoversTime(distDiff, time, vel);
-
-                float timeToReach = 0;
-                
-                //if (vel == 0)
-                //{
-                //    timeToReach = distDiff / Formulas.lightSpeed;
-                //}
-                
-                //else
-                //{
-                    if (vel > 0 || vel < 0)
-                        timeToReach = Formulas.GetGamma(vel) * (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2);
-                //}
-
-                rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(timeToReach);
-                */
-
-                float distDiff = Mathf.Abs(rv.staticsParent.GetChild(i).position.z - transform.position.z);
                 if (vel > 0)
                 {
-                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time =
-                        Formulas.GetGamma(vel) * (time + (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2));
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(
+                        Formulas.GetGamma(vel) * (time + (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2)));
                 }
                 else if (vel < 0)
                 {
-                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time =
-                        Formulas.GetGamma(vel) * (time - (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2));
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(
+                        Formulas.GetGamma(vel) * (time - (vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2)));
                 }
                 else
                 {
-                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().time = time;
+                    rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(
+                        distDiff / Formulas.lightSpeed);
                 }
+                */
             }
 
             // Apply moving static object's position
@@ -218,7 +205,7 @@ public class Viewer : MonoBehaviour
                 }
             }
         }
-        /*
+        
         // Update static object shared time (tick rate based timescale)
         if (vel > 0)
         {
@@ -228,12 +215,10 @@ public class Viewer : MonoBehaviour
         {
             staticManager.UpdateTime(timeTicks * Formulas.GetGamma(vel));
         }
-        */
-        //else
-        //{
-            //staticManager.UpdateTime(0.02f);
-        //}
-        
+        else
+        {
+            staticManager.UpdateTime(timeTicks);
+        }
     }
 
     private void ManageAcceleration()
@@ -253,7 +238,7 @@ public class Viewer : MonoBehaviour
             multiplier = 1;
         }
 
-        if (Input.GetKey(up))
+        if (Input.GetKey(up) || alwaysAccelerate)
         {
             vel += multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = 1;
@@ -263,28 +248,6 @@ public class Viewer : MonoBehaviour
             vel -= multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = -1;
         }
-        // If not accelerating/decelerating, slow down untill stopped
-        /*
-        else if (!Input.GetKey(up) && !Input.GetKey(down))
-        {
-            if (vel > 0)
-            {
-                vel -= 0.1f * acceleration * Time.fixedDeltaTime;
-                accelerating = -1;
-
-                if (vel < 0)
-                    vel = 0;
-            }
-            else if (vel < 0)
-            {
-                vel += 0.1f * acceleration * Time.fixedDeltaTime;
-                accelerating = 1;
-
-                if (vel > 0)
-                    vel = 0;
-            }
-        }
-        */
     }
 
     public void ChangeView()

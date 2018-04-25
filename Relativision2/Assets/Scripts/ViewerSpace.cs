@@ -6,9 +6,10 @@ public class ViewerSpace : MonoBehaviour
 {
     public ReferenceVars rv;
 
-    public float acceleration = 0.9f;
+    public float acceleration = 0.1f;
     public float inObjDist = 110;
     public float velPercentage = 0;
+    public bool alwaysAccelerate = false;
 
     public float vel;
     public float time;
@@ -167,7 +168,7 @@ public class ViewerSpace : MonoBehaviour
             multiplier = 1;
         }
 
-        if (Input.GetKey(up))
+        if (Input.GetKey(up) || alwaysAccelerate)
         {
             vel += multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = 1;
@@ -177,28 +178,6 @@ public class ViewerSpace : MonoBehaviour
             vel -= multiplier * acceleration * Time.fixedDeltaTime;
             accelerating = -1;
         }
-        /*
-        // If not accelerating/decelerating, slow down untill stopped
-        else if (!Input.GetKey(up) && !Input.GetKey(down))
-        {
-            if (vel > 0)
-            {
-                vel -= 0.1f * acceleration * Time.fixedDeltaTime;
-                accelerating = -1;
-
-                if (vel < 0)
-                    vel = 0;
-            }
-            else if (vel < 0)
-            {
-                vel += 0.1f * acceleration * Time.fixedDeltaTime;
-                accelerating = 1;
-
-                if (vel > 0)
-                    vel = 0;
-            }
-        }
-        */
     }
 
     private void SpawnObjects()

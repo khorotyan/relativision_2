@@ -9,7 +9,7 @@ public class StaticManager : MonoBehaviour
     public Vector3 initScale;
 
     public float defRotSpeed = 20;
-    public float rotSpeed = 20;
+    public float rotSpeed = 40;
     public static float sharedTime = 0;
     public float travelDist = 0;
     public float time = 0;
@@ -31,8 +31,8 @@ public class StaticManager : MonoBehaviour
     {
         if (transform.name.Contains("Windmill"))
         {
-            //transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(sharedTime * rotSpeed - extraRot, 0, 0);
-            transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(time * rotSpeed, 0, 0);
+            transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(sharedTime * rotSpeed - extraRot, 0, 0);
+            //transform.GetChild(0).GetChild(0).transform.localRotation = Quaternion.Euler(time * rotSpeed, 0, 0);
         }
     }
 
