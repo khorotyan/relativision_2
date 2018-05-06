@@ -11,3 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CarScene.unity
     guid: 2c38847f773554849b7dcb4163c3a569
+  - enabled: 1
+    path: Assets/Scenes/TwinsScene.unity
+    guid: 6d8942c07b9032e49886ff1b9bb4442c

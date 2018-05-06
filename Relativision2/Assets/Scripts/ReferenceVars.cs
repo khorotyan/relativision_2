@@ -11,6 +11,7 @@ public class ReferenceVars : MonoBehaviour
     public Transform staticsParent;
     public Transform ground;
 
+    public TextMesh redCarSpeedText;
     public Text timeText;
     public Text VelocityText;
 

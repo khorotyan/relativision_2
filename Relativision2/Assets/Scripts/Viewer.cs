@@ -71,7 +71,9 @@ public class Viewer : MonoBehaviour
         transform.position += new Vector3(0, 0, vel * timeTicks);
         ground.position += new Vector3(0, 0, vel * timeTicks);
 
-        rv.VelocityText.text = (100 * vel / Formulas.lightSpeed).ToString("F1") + "% of light speed";
+        string speedText = (100 * vel / Formulas.lightSpeed).ToString("F1") + "% of light speed";
+        rv.VelocityText.text = speedText;
+        rv.redCarSpeedText.text = speedText;
         velPercentage = vel / Formulas.lightSpeed;
     }
     
@@ -196,10 +198,10 @@ public class Viewer : MonoBehaviour
                     sm.travelDist += 2 * vel * timeTicks;
                     rv.staticsParent.GetChild(i).localPosition += new Vector3(0, 0, 
                         sm.travelDist / Formulas.GetGamma(vel));
-                }   
+                }
                 else
                 {
-                    //sm.travelDist += vel* timeTicks;
+                    //sm.travelDist += vel * timeTicks;
                     //rv.staticsParent.GetChild(i).localPosition += new Vector3(0, 0, 
                     //    0.5f * Formulas.lightSpeed * 0.02f);
                 }

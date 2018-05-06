@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour {
     public Button nextSceneB;
     public InputField velocityIn;
     public Toggle accelerationToggle;
+    public Button twinSceneB;
 
     private void Awake()
     {
@@ -103,6 +104,8 @@ public class UIManager : MonoBehaviour {
             else
                 viewer.alwaysAccelerate = accelerationToggle.isOn;
         });
+
+        twinSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(2); });
 
         if (isSpaceScene == true)
             nextSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(1); });

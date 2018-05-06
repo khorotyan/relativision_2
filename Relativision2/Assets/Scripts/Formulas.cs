@@ -12,6 +12,11 @@ public class Formulas : MonoBehaviour
         return 1 / (Mathf.Sqrt(1 - Mathf.Pow(velocity, 2) / Mathf.Pow(lightSpeed, 2)));
     }
 
+    public static float GetGamma(float velocity, float lightSpeed)
+    {
+        return 1 / (Mathf.Sqrt(1 - Mathf.Pow(velocity, 2) / Mathf.Pow(lightSpeed, 2)));
+    }
+
     // Get the position of a moving body - x'
     public static float GetMoversPos(float statPos, float statTime, float velocity)
     {
