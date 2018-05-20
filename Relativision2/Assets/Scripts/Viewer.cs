@@ -90,12 +90,10 @@ public class Viewer : MonoBehaviour
 
             if (vel > 0)
             {
-                //newLen = Formulas.GetStaticsLength(1, vel);
                 newLen = Formulas.GetMoversLength(1, vel);
             }
             else if (vel < 0)
             {
-                //newLen = Formulas.GetMoversLength(1, vel);
                 newLen = Formulas.GetStaticsLength(1, vel);
             }
 
@@ -125,15 +123,11 @@ public class Viewer : MonoBehaviour
             
             if (vel > 0)
             {
-                //float objDistDiff = objDist - objDist / Formulas.GetGamma(vel);
-                //rv.staticsParent.GetChild(i).position = statInitPos - new Vector3(0, 0, objDistDiff);
                 float objDistDiff = objDist * Formulas.GetGamma(vel) - objDist;
                 rv.staticsParent.GetChild(i).position = statInitPos + new Vector3(0, 0, objDistDiff);
             }
             else if (vel < 0)
             {
-                //float objDistDiff = objDist * Formulas.GetGamma(vel) - objDist;
-                //rv.staticsParent.GetChild(i).position = statInitPos + new Vector3(0, 0, objDistDiff);
                 float objDistDiff = objDist - objDist / Formulas.GetGamma(vel);
                 rv.staticsParent.GetChild(i).position = statInitPos - new Vector3(0, 0, objDistDiff);
             }

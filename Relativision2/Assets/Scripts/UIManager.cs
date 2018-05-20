@@ -22,10 +22,11 @@ public class UIManager : MonoBehaviour {
     public InputField velocityIn;
     public Toggle accelerationToggle;
     public Button twinSceneB;
+    public Toggle pauseToggle;
 
     private void Awake()
     {
-        restartB.onClick.AddListener(delegate { SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); });
+        restartB.onClick.AddListener(delegate { SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); ResetTimeScale(); });
 
         if (isSpaceScene == true)
             viewerSpace.vel = lightSpeedS.value * viewerSpace.velPercentage;
@@ -105,11 +106,25 @@ public class UIManager : MonoBehaviour {
                 viewer.alwaysAccelerate = accelerationToggle.isOn;
         });
 
-        twinSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(2); });
+        twinSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(2); ResetTimeScale(); });
 
         if (isSpaceScene == true)
-            nextSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(1); });
+            nextSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(1); ResetTimeScale(); });
         else
-            nextSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(0); });
+            nextSceneB.onClick.AddListener(delegate { SceneManager.LoadScene(0); ResetTimeScale(); });
+
+        pauseToggle.onValueChanged.AddListener(delegate
+        {
+            if (pauseToggle.isOn)
+                Time.timeScale = 0;
+            else
+                Time.timeScale = 1;
+        });
+    }
+
+    private void ResetTimeScale()
+    {
+        if (Time.timeScale != 1)
+            Time.timeScale = 1;
     }
 }
