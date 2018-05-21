@@ -155,7 +155,7 @@ public class Viewer : MonoBehaviour
                 float distDiff = rv.staticsParent.GetChild(i).position.z - transform.position.z;
 
                 rv.staticsParent.GetChild(i).GetComponent<StaticManager>().SetVisibleRotation(
-                        Formulas.GetGamma(vel) * ((vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2)));
+                        -Formulas.GetGamma(vel) * ((vel * distDiff) / Mathf.Pow(Formulas.lightSpeed, 2)));
                 /*
                 if (vel > 0)
                 {
@@ -201,20 +201,9 @@ public class Viewer : MonoBehaviour
                 }
             }
         }
-        
+
         // Update static object shared time (tick rate based timescale)
-        if (vel > 0)
-        {
-            staticManager.UpdateTime(timeTicks / Formulas.GetGamma(vel));
-        }
-        else if (vel < 0)
-        {
-            staticManager.UpdateTime(timeTicks * Formulas.GetGamma(vel));
-        }
-        else
-        {
-            staticManager.UpdateTime(timeTicks);
-        }
+        staticManager.UpdateTime(timeTicks);
     }
 
     private void ManageAcceleration()

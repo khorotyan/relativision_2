@@ -246,7 +246,6 @@ public class TwinsSceneManager : MonoBehaviour
     {
         viewerTime += Time.fixedDeltaTime;
         viewerTimeText.text = "Time: " + viewerTime + " s";
-
         planetTime += Time.fixedDeltaTime * Formulas.GetGamma(v - planetTwinVelocity, c);
         planetTimeText.text = "Time: " + planetTime + " s";
     }
